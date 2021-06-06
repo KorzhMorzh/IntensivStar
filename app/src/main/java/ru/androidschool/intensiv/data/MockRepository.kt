@@ -18,7 +18,7 @@ object MockRepository {
         return moviesList
     }
 
-    fun getSeries(): List<Series> = List(10){
+    fun getSeries(): List<Series> = List(10) {
         Series(
             title = "Spider-Man $it",
             rating = Random.nextDouble(0.0, 5.0),

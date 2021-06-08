@@ -21,5 +21,25 @@
         <item name="cornerSize">10%</item>
     </style>
 
+    <style name="AppTheme.Title.TitleWhite" parent="android:TextAppearance">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="AppTheme.Text.TextGreyParagraph" parent="android:TextAppearance">
+        <item name="android:textColor">@color/white_70</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingExtra">8sp</item>
+    </style>
+    
+    <style name="ButtonGrey" parent="AppTheme">
+        <item name="android:background">@drawable/button_grey_background</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 
 </resources>

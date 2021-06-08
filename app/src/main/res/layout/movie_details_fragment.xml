@@ -130,6 +130,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/description_tv"
+                android:orientation="horizontal"
+                tools:listitem="@layout/item_actor"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_marginTop="@dimen/material_margin_normal"
                 tools:itemCount="1"/>

@@ -21,6 +21,10 @@
         <item name="cornerSize">10%</item>
     </style>
 
+    <style name="ShapeAppearanceOverlay.App.CornerSize49Percent" parent="">
+        <item name="cornerSize">49%</item>
+    </style>
+
     <style name="AppTheme.Title.TitleWhite" parent="android:TextAppearance">
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>

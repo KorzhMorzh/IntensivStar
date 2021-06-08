@@ -25,8 +25,8 @@ object MockRepository {
                 "They eventually fall in love and have a son named Arthur, " +
                 "who is born with the power to communicate with marine lifeforms. ",
         actors = listOf(
-            Actor("Jason Momoa", ""),
-            Actor("Nicole Kidman", "")
+            Actor("Jason Momoa", "https://cdn.citatis.com/img/a/1c/15292.v6.jpg"),
+            Actor("Nicole Kidman", "https://cdn.citatis.com/img/a/1c/15292.v6.jpg")
         ),
         studio = "Warner Bros.",
         genre = "Action, Adventure, Fantasy",

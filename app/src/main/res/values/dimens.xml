@@ -3,6 +3,7 @@
     <dimen name="material_margin_normal">16dp</dimen>
     <dimen name="material_margin_small">8dp</dimen>
     <dimen name="material_margin_super_small">4dp</dimen>
+    <dimen name="margin_12dp">12dp</dimen>
 
     <dimen name="image_preview_height">120dp</dimen>
     <dimen name="image_preview_width">75dp</dimen>
@@ -17,7 +18,11 @@
     <dimen name="close_width">20dp</dimen>
 
     <dimen name="dimens_32">32dp</dimen>
+    <dimen name="dimens_20">20dp</dimen>
     <dimen name="search_bar_height">56dp</dimen>
     <dimen name="min_height">100dp</dimen>
+
+    <!-- Series item -->
+    <dimen name="series_item_height">160dp</dimen>
 
 </resources>

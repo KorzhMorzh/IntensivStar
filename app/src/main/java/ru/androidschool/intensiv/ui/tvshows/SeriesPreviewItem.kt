@@ -1,11 +1,11 @@
 package ru.androidschool.intensiv.ui.tvshows
 
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_series.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.Series
+import ru.androidschool.intensiv.util.load
 
 class SeriesPreviewItem(
     private val content: Series,
@@ -20,8 +20,6 @@ class SeriesPreviewItem(
         }
         viewHolder.title.text = content.title
         viewHolder.series_rating.rating = content.rating.toFloat()
-        Picasso.get()
-            .load(content.image)
-            .into(viewHolder.image_series)
+        viewHolder.image_series.load(content.image)
     }
 }

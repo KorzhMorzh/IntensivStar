@@ -1,5 +1,7 @@
 package ru.androidschool.intensiv.data
 
+import kotlin.random.Random
+
 object MockRepository {
 
     fun getMovies(): List<Movie> {
@@ -14,6 +16,14 @@ object MockRepository {
         }
 
         return moviesList
+    }
+
+    fun getSeries(): List<Series> = List(10) {
+        Series(
+            title = "Spider-Man $it",
+            rating = Random.nextDouble(0.0, 5.0),
+            image = "https://www.whats-on-netflix.com/wp-content/uploads/2020/12/most-popular-series-on-netflix-for-2020.jpg"
+        )
     }
 
     fun getMovieDetails(): MovieDetails = MovieDetails(

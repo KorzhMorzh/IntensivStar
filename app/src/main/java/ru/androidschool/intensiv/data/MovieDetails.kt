@@ -1,17 +1,31 @@
 package ru.androidschool.intensiv.data
 
+import com.google.gson.annotations.SerializedName
+
 data class MovieDetails(
-    val title: String,
-    val image: String,
-    val rating: Double,
-    val description: String,
-    val actors: List<Actor>,
-    val studio: String,
-    val genre: String,
-    val year: String
+    val genres: List<Genre>?,
+    val id: Int?,
+    val overview: String?,
+    val popularity: Double?,
+    @SerializedName("poster_path")
+    val posterPath: String?,
+    @SerializedName("")
+    val production_companies: List<ProductionCompany>?,
+    @SerializedName("release_date")
+    val releaseDate: String?,
+    val title: String?,
+    @SerializedName("vote_average")
+    val voteAverage: Double?
+){
+    val rating: Float
+        get() = voteAverage?.div(2)?.toFloat() ?: 0.0f
+}
+
+data class Genre(
+    val id: Int?,
+    val name: String
 )
 
-data class Actor(
-    val name: String,
-    val image: String
+data class ProductionCompany(
+    val name: String?
 )

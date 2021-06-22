@@ -4,12 +4,12 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_series.*
 import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.data.Series
+import ru.androidschool.intensiv.data.Movie
 import ru.androidschool.intensiv.util.load
 
 class SeriesPreviewItem(
-    private val content: Series,
-    private val onClick: (series: Series) -> Unit
+    private val content: Movie,
+    private val onClick: (series: Movie) -> Unit
 ) : Item() {
 
     override fun getLayout() = R.layout.item_series
@@ -19,7 +19,7 @@ class SeriesPreviewItem(
             onClick.invoke(content)
         }
         viewHolder.title.text = content.title
-        viewHolder.series_rating.rating = content.rating.toFloat()
-        viewHolder.image_series.load(content.image)
+        viewHolder.series_rating.rating = content.rating
+        content.posterPath?.let { viewHolder.image_series.load(it) }
     }
 }

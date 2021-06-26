@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
@@ -47,12 +48,13 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
 
         movies_recycler_view.adapter = adapter
 
-        compositeDisposable.add(MovieApiClient.apiClient
-            .getUpcomingMovies()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                val newMoviesList = listOf(
+        compositeDisposable.add(
+            MovieApiClient.apiClient
+                .getUpcomingMovies()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    val newMoviesList = listOf(
                     MainCardContainer(
                         R.string.upcoming,
                         it.results.map {
@@ -106,9 +108,11 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
     }
 
     private fun openMovieDetails(movie: Movie) {
-        val bundle = Bundle()
-        bundle.putString(KEY_TITLE, movie.title)
-        findNavController().navigate(R.id.movie_details_fragment, bundle, options)
+        findNavController().navigate(
+            R.id.movie_details_fragment,
+            bundleOf(KEY_MOVIE_ID to movie.id),
+            options
+        )
     }
 
     private fun openSearch(searchText: String) {
@@ -129,7 +133,7 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
 
     companion object {
         const val MIN_LENGTH = 3
-        const val KEY_TITLE = "title"
+        const val KEY_MOVIE_ID = "movieId"
         const val KEY_SEARCH = "search"
     }
 }

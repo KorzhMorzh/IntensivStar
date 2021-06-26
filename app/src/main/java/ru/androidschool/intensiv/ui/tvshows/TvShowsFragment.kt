@@ -20,7 +20,7 @@ class TvShowsFragment : BaseFragment(R.layout.tv_shows_fragment) {
         super.onViewCreated(view, savedInstanceState)
         compositeDisposable.add(
             MovieApiClient.apiClient
-                .getUpcomingMovies()
+                .getTvSeries()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { seriesResponse ->

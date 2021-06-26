@@ -8,9 +8,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object MovieApiClient {
     private const val BASE_URL = "https://api.themoviedb.org/3/"
+    const val BASE_URL_IMAGE = "https://image.tmdb.org/t/p/w185"
 
     private var client: OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor())
+        .addInterceptor(
+            HttpLoggingInterceptor()
+                .apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
         .build()
 
     val apiClient: MovieApiInterface by lazy {

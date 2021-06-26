@@ -6,6 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.data.Movie
+import ru.androidschool.intensiv.data.MovieCredits
 import ru.androidschool.intensiv.data.MovieDetails
 import ru.androidschool.intensiv.data.PageResponse
 
@@ -39,7 +40,21 @@ interface MovieApiInterface {
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = RU_LANGUAGE_CODE
-    ): Observable<PageResponse<MovieDetails>>
+    ): Observable<MovieDetails>
+
+    @GET("movie/{movie_id}/credits")
+    fun getMovieCredits(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = RU_LANGUAGE_CODE
+    ): Observable<MovieCredits>
+
+    @GET("search/movie")
+    fun searchMovie(
+        @Query("query") query: String,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("language") language: String = RU_LANGUAGE_CODE
+    ): Observable<PageResponse<Movie>>
 
     companion object {
         private const val RU_LANGUAGE_CODE = "ru-RU"

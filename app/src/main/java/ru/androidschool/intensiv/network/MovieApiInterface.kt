@@ -5,10 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.androidschool.intensiv.BuildConfig
-import ru.androidschool.intensiv.data.Movie
-import ru.androidschool.intensiv.data.MovieCredits
-import ru.androidschool.intensiv.data.MovieDetails
-import ru.androidschool.intensiv.data.PageResponse
+import ru.androidschool.intensiv.data.*
 
 interface MovieApiInterface {
     @GET("movie/now_playing")
@@ -33,7 +30,7 @@ interface MovieApiInterface {
     fun getTvSeries(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = RU_LANGUAGE_CODE
-    ): Observable<PageResponse<Movie>>
+    ): Observable<PageResponse<Series>>
 
     @GET("movie/{movie_id}")
     fun getMovieDetails(

@@ -2,7 +2,6 @@ package ru.androidschool.intensiv.ui.tvshows
 
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,15 +14,6 @@ import ru.androidschool.intensiv.ui.BaseFragment
 class TvShowsFragment : BaseFragment(R.layout.tv_shows_fragment) {
     private val adapter by lazy {
         GroupAdapter<GroupieViewHolder>()
-    }
-
-    private val options = navOptions {
-        anim {
-            enter = R.anim.slide_in_right
-            exit = R.anim.slide_out_left
-            popEnter = R.anim.slide_in_left
-            popExit = R.anim.slide_out_right
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

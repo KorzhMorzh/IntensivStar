@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:layout_marginTop="@dimen/material_margin_normal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/image_series"
+        android:layout_width="match_parent"
+        android:scaleType="centerCrop"
+        android:layout_height="@dimen/series_item_height"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:textAllCaps="true"
+        style="@style/Base.TextAppearance.AppCompat.TitleItemWhite"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_12dp"
+        app:layout_constraintEnd_toStartOf="@id/series_rating"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="@dimen/material_margin_small"
+        app:layout_constraintTop_toBottomOf="@id/image_series" />
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/series_rating"
+        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:isIndicator="true"
+        android:numStars="@integer/rating_num_stars"
+        android:progressBackgroundTint="@color/colorControlNormal"
+        android:stepSize="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/title"
+        tools:rating="5" />
+</androidx.constraintlayout.widget.ConstraintLayout>

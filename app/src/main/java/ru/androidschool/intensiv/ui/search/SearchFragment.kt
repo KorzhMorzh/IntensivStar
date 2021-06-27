@@ -20,7 +20,6 @@ import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.afterTextChanged
 import ru.androidschool.intensiv.ui.feed.FeedFragment
 import ru.androidschool.intensiv.ui.feed.FeedFragment.Companion.KEY_SEARCH
-import ru.androidschool.intensiv.ui.tvshows.SeriesPreviewItem
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -54,7 +53,7 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         val movieList = it.map {
-                            SeriesPreviewItem(
+                            SearchPreviewItem(
                                 it
                             ) { movie -> openMovieDetails(movie) }
                         }.toList()

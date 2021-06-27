@@ -46,7 +46,6 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
             .map { it.replace(" ", "") }
             .debounce(500, TimeUnit.MILLISECONDS)
             .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
-            .doOnComplete { progress_bar.visibility = View.GONE }
             .subscribe { query ->
                 MovieApiClient.apiClient
                     .searchMovie(query)
@@ -59,7 +58,9 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
                                 it
                             ) { movie -> openMovieDetails(movie) }
                         }.toList()
+                        adapter.clear()
                         movies_recycler_view.adapter = adapter.apply { addAll(movieList) }
+                        progress_bar.visibility = View.GONE
                     }
             })
         search_toolbar.setText(searchTerm)

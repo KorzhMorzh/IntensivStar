@@ -11,13 +11,27 @@
         android:layout_height="match_parent"
         android:background="@color/blueDark"
         android:overScrollMode="never"
+        android:fillViewport="true"
         android:paddingHorizontal="@dimen/dimens_20"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/blueDark">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/colorAccent"/>
+            </FrameLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/movies_recycler_view"
@@ -30,17 +44,4 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <FrameLayout
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/colorAccent"/>
-    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

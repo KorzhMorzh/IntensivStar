@@ -4,18 +4,23 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
 import kotlinx.android.synthetic.main.search_toolbar.view.*
 import ru.androidschool.intensiv.R
+import ru.androidschool.intensiv.data.Feed
 import ru.androidschool.intensiv.data.Movie
+import ru.androidschool.intensiv.data.PageResponse
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.afterTextChanged
@@ -49,63 +54,42 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
         movies_recycler_view.adapter = adapter
 
         compositeDisposable.add(
-            MovieApiClient.apiClient
-                .getUpcomingMovies()
+            Observable.zip(
+                MovieApiClient.apiClient
+                    .getUpcomingMovies(),
+                MovieApiClient.apiClient
+                    .getPopularMovies(),
+                MovieApiClient.apiClient
+                    .getPlayingNowMovies(),
+                Function3<PageResponse<Movie>, PageResponse<Movie>, PageResponse<Movie>, Feed> { upcomingMovies, popularMovies, playingNowMovies ->
+                    Feed(
+                        upcomingMovies.results,
+                        playingNowMovies.results,
+                        popularMovies.results
+                    )
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
+                .doOnComplete { progress_bar.visibility = View.GONE }
                 .subscribe {
-                    val newMoviesList = listOf(
-                    MainCardContainer(
-                        R.string.upcoming,
-                        it.results.map {
-                            MovieItem(it) { movie ->
-                                openMovieDetails(movie)
-                            }
-                        }.toList()
-                    )
-                )
-                adapter.apply { addAll(newMoviesList) }
-            }
-        )
-
-        compositeDisposable.add(MovieApiClient.apiClient
-            .getPopularMovies()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                val newMoviesList = listOf(
-                    MainCardContainer(
-                        R.string.popular,
-                        it.results.map {
-                            MovieItem(it) { movie ->
-                                openMovieDetails(movie)
-                            }
-                        }.toList()
-                    )
-                )
-                adapter.apply { addAll(newMoviesList) }
-            }
-        )
-
-        compositeDisposable.add(MovieApiClient.apiClient
-            .getPlayingNowMovies()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                val newMoviesList = listOf(
-                    MainCardContainer(
-                        R.string.playing_now,
-                        it.results.map {
-                            MovieItem(it) { movie ->
-                                openMovieDetails(movie)
-                            }
-                        }.toList()
-                    )
-                )
-                adapter.apply { addAll(newMoviesList) }
-            }
-        )
+                    adapter.apply {
+                        addAll(mapMovies(R.string.playing_now, it.playingNowMovies))
+                        addAll(mapMovies(R.string.popular, it.popularMovies))
+                        addAll(mapMovies(R.string.upcoming, it.upcomingMovies))
+                    }
+                })
     }
+
+    private fun mapMovies(@StringRes title: Int, movies: List<Movie>) =
+        listOf(
+            MainCardContainer(
+                title, movies.map {
+                    MovieItem(it) { movie ->
+                        openMovieDetails(movie)
+                    }
+                })
+        )
 
     private fun openMovieDetails(movie: Movie) {
         findNavController().navigate(

@@ -46,6 +46,8 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
             .filter { it.length > 3 }
             .map { it.replace(" ", "") }
             .debounce(500, TimeUnit.MILLISECONDS)
+            .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
+            .doOnComplete { progress_bar.visibility = View.GONE }
             .subscribe { query ->
                 MovieApiClient.apiClient
                     .searchMovie(query)

@@ -2,6 +2,7 @@ package ru.androidschool.intensiv.ui.tvshows
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,6 +17,15 @@ class TvShowsFragment : BaseFragment(R.layout.tv_shows_fragment) {
         GroupAdapter<GroupieViewHolder>()
     }
 
+    private val options = navOptions {
+        anim {
+            enter = R.anim.slide_in_right
+            exit = R.anim.slide_out_left
+            popEnter = R.anim.slide_in_left
+            popExit = R.anim.slide_out_right
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         compositeDisposable.add(
@@ -23,6 +33,8 @@ class TvShowsFragment : BaseFragment(R.layout.tv_shows_fragment) {
                 .getTvSeries()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
+                .doOnComplete { progress_bar.visibility = View.GONE }
                 .subscribe { seriesResponse ->
                     val tvShowsList = seriesResponse.results.map {
                         SeriesPreviewItem(

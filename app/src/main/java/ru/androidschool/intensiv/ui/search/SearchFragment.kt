@@ -7,20 +7,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.feed_header.*
 import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.search_toolbar.view.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.Movie
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
-import ru.androidschool.intensiv.ui.afterTextChanged
 import ru.androidschool.intensiv.ui.feed.FeedFragment
 import ru.androidschool.intensiv.ui.feed.FeedFragment.Companion.KEY_SEARCH
-import timber.log.Timber
+import ru.androidschool.intensiv.util.setDefaultThreads
 import java.util.concurrent.TimeUnit
 
 class SearchFragment : BaseFragment(R.layout.fragment_search) {
@@ -41,28 +36,28 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val searchTerm = requireArguments().getString(KEY_SEARCH)
-        compositeDisposable.addAll(search()
-            .filter { it.length > 3 }
-            .map { it.replace(" ", "") }
-            .debounce(500, TimeUnit.MILLISECONDS)
-            .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
-            .subscribe { query ->
+        compositeDisposable.addAll(search_toolbar.search()
+            .filter { it.length > MIN_SEARCH_SYMBOLS }
+            .map { it.trim() }
+            .debounce(SEARCH_TIMEOUT_MILLISECONDS, TimeUnit.MILLISECONDS)
+            .flatMap {
                 MovieApiClient.apiClient
-                    .searchMovie(query)
-                    .map { it.results }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        val movieList = it.map {
-                            SearchPreviewItem(
-                                it
-                            ) { movie -> openMovieDetails(movie) }
-                        }.toList()
-                        adapter.clear()
-                        movies_recycler_view.adapter = adapter.apply { addAll(movieList) }
-                        progress_bar.visibility = View.GONE
-                    }
-            })
+                    .searchMovie(it)
+                    .map { pageResponse -> pageResponse.results }
+            }
+            .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
+            .setDefaultThreads()
+            .subscribe {
+                val movieList = it.map {
+                    SearchPreviewItem(
+                        it
+                    ) { movie -> openMovieDetails(movie) }
+                }.toList()
+                adapter.clear()
+                movies_recycler_view.adapter = adapter.apply { addAll(movieList) }
+                progress_bar.visibility = View.GONE
+            }
+        )
         search_toolbar.setText(searchTerm)
     }
 
@@ -74,11 +69,8 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
         )
     }
 
-    private fun search(): Observable<String> =
-        Observable.create { e ->
-            search_toolbar.search_edit_text.afterTextChanged {
-                Timber.d(it.toString())
-                e.onNext(it.toString())
-            }
-        }
+    companion object {
+        const val SEARCH_TIMEOUT_MILLISECONDS = 500L
+        const val MIN_SEARCH_SYMBOLS = 3
+    }
 }

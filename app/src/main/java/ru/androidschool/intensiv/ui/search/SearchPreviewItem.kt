@@ -19,7 +19,7 @@ class SearchPreviewItem(
             onClick.invoke(content)
         }
         viewHolder.title.text = content.title
-        viewHolder.series_rating.rating = content.rating
-        content.posterPath?.let { viewHolder.image_series.load(it) }
+        viewHolder.series_rating.rating = content.voteAverage
+        viewHolder.image_series.load(content.posterPath)
     }
 }

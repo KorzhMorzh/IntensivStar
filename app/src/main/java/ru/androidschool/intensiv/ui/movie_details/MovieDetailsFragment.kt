@@ -5,14 +5,13 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.movie_details_fragment.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.feed.FeedFragment
 import ru.androidschool.intensiv.util.load
+import ru.androidschool.intensiv.util.setDefaultThreads
 
 class MovieDetailsFragment : BaseFragment(R.layout.movie_details_fragment) {
 
@@ -25,25 +24,23 @@ class MovieDetailsFragment : BaseFragment(R.layout.movie_details_fragment) {
         compositeDisposable.add(
             MovieApiClient.apiClient
                 .getMovieDetails(movieId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .setDefaultThreads()
                 .subscribe {
                     title_tv.text = it.title
                     description_tv.text = it.overview
-                    movie_rating.rating = it.rating
+                    movie_rating.rating = it.voteAverage
                     genre_value.text = it.genres?.joinToString(", ") { genre -> genre.name }
                     studio_value.text =
                         it.productionCompanies?.joinToString(", ") { company -> company.name }
                     year_value.text = it.releaseDate
-                    movie_image.load(it.poster)
+                    movie_image.load(it.posterPath)
                 }
         )
 
         compositeDisposable.add(
             MovieApiClient.apiClient
                 .getMovieCredits(movieId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .setDefaultThreads()
                 .subscribe {
                     actors_rv.adapter =
                         adapter.apply { addAll(it.cast.map { ActorPreviewItem(it) }) }

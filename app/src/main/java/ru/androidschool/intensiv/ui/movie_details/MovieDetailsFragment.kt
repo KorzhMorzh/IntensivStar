@@ -5,10 +5,17 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.movie_details_fragment.*
 import ru.androidschool.intensiv.R
+import ru.androidschool.intensiv.data.MovieCredits
+import ru.androidschool.intensiv.data.MovieDetails
+import ru.androidschool.intensiv.data.MovieDetailsWithActors
+import ru.androidschool.intensiv.local.MovieDatabase
+import ru.androidschool.intensiv.local.convertMovie
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.feed.FeedFragment
@@ -20,37 +27,60 @@ class MovieDetailsFragment : BaseFragment(R.layout.movie_details_fragment) {
         GroupAdapter<GroupieViewHolder>()
     }
 
+    private val movieDao by lazy {
+        MovieDatabase.get(requireContext()).movieDao()
+    }
+
+    private lateinit var movie: MovieDetailsWithActors
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val movieId = requireArguments().getInt(FeedFragment.KEY_MOVIE_ID)
+
         compositeDisposable.add(
-            MovieApiClient.apiClient
-                .getMovieDetails(movieId)
+            Observable
+                .zip(
+                    MovieApiClient.apiClient
+                        .getMovieDetails(movieId),
+                    MovieApiClient.apiClient
+                        .getMovieCredits(movieId),
+                    BiFunction<MovieDetails, MovieCredits, MovieDetailsWithActors> { movie, credits ->
+                        MovieDetailsWithActors(
+                            movie,
+                            credits.cast
+                        )
+                    }
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    title_tv.text = it.title
-                    description_tv.text = it.overview
-                    movie_rating.rating = it.rating
-                    genre_value.text = it.genres?.joinToString(", ") { genre -> genre.name }
+                    movie = it
+                    title_tv.text = it.movie.title
+                    description_tv.text = it.movie.overview
+                    movie_rating.rating = it.movie.rating
+                    genre_value.text = it.movie.genres?.joinToString(", ") { genre -> genre.name }
                     studio_value.text =
-                        it.productionCompanies?.joinToString(", ") { company -> company.name }
-                    year_value.text = it.releaseDate
-                    movie_image.load(it.poster)
+                        it.movie.productionCompanies?.joinToString(", ") { company -> company.name }
+                    year_value.text = it.movie.releaseDate
+                    movie_image.load(it.movie.poster)
+                    actors_rv.adapter =
+                        adapter.apply { addAll(it.actors.map { ActorPreviewItem(it) }) }
                 }
         )
 
-        compositeDisposable.add(
-            MovieApiClient.apiClient
-                .getMovieCredits(movieId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    actors_rv.adapter =
-                        adapter.apply { addAll(it.cast.map { ActorPreviewItem(it) }) }
-                }
-        )
         back_arr.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        addToFavourite.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) addToFavourite() else removeFromFavourite()
+        }
+    }
+
+    private fun addToFavourite() {
+        movieDao.save(convertMovie(movie))
+    }
+
+    private fun removeFromFavourite() {
+        movieDao.delete(convertMovie(movie))
     }
 }

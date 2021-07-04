@@ -48,3 +48,8 @@ data class Actor(
     val image: String
         get() = BASE_URL_IMAGE + profilePath
 }
+
+data class MovieDetailsWithActors(
+    val movie: MovieDetails,
+    val actors: List<Actor>
+)

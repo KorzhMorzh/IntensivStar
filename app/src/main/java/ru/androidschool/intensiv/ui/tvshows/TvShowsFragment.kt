@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.View
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.tv_shows_fragment.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
+import ru.androidschool.intensiv.util.setDefaultThreads
 
 class TvShowsFragment : BaseFragment(R.layout.tv_shows_fragment) {
     private val adapter by lazy {
@@ -21,8 +20,7 @@ class TvShowsFragment : BaseFragment(R.layout.tv_shows_fragment) {
         compositeDisposable.add(
             MovieApiClient.apiClient
                 .getTvSeries()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .setDefaultThreads()
                 .subscribe { seriesResponse ->
                     val tvShowsList = seriesResponse.results.map {
                         SeriesPreviewItem(

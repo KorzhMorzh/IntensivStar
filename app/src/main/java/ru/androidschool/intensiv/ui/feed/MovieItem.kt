@@ -16,12 +16,12 @@ class MovieItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.description.text = content.title
-        viewHolder.movie_rating.rating = content.rating
+        viewHolder.movie_rating.rating = content.voteAverage
         viewHolder.content.setOnClickListener {
             onClick.invoke(content)
         }
 
-        // TODO Получать из модели
-        content.posterPath?.let { viewHolder.image_preview.load(it) }
+
+        viewHolder.image_preview.load(content.posterPath)
     }
 }

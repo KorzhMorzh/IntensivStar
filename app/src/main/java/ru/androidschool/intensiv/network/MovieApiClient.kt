@@ -5,21 +5,20 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.androidschool.intensiv.BuildConfig
 
 object MovieApiClient {
-    private const val BASE_URL = "https://api.themoviedb.org/3/"
-    const val BASE_URL_IMAGE = "https://image.tmdb.org/t/p/w185"
 
     private var client: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(
             HttpLoggingInterceptor()
-                .apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
+                .apply { if (BuildConfig.BUILD_TYPE != "release") setLevel(HttpLoggingInterceptor.Level.BODY) })
         .build()
 
     val apiClient: MovieApiInterface by lazy {
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

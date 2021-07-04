@@ -10,11 +10,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.Observable
+import io.reactivex.functions.Function3
 import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
 import kotlinx.android.synthetic.main.search_toolbar.view.*
 import ru.androidschool.intensiv.R
+import ru.androidschool.intensiv.data.Feed
 import ru.androidschool.intensiv.data.Movie
+import ru.androidschool.intensiv.data.PageResponse
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.afterTextChanged
@@ -49,47 +53,30 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
         movies_recycler_view.adapter = adapter
 
         compositeDisposable.add(
-            MovieApiClient.apiClient
-                .getUpcomingMovies()
+            Observable.zip(
+                MovieApiClient.apiClient
+                    .getUpcomingMovies(),
+                MovieApiClient.apiClient
+                    .getPopularMovies(),
+                MovieApiClient.apiClient
+                    .getPlayingNowMovies(),
+                Function3<PageResponse<Movie>, PageResponse<Movie>, PageResponse<Movie>, Feed> { upcomingMovies, popularMovies, playingNowMovies ->
+                    Feed(
+                        upcomingMovies.results,
+                        playingNowMovies.results,
+                        popularMovies.results
+                    )
+                })
                 .setDefaultThreads()
+                .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
+                .doOnComplete { progress_bar.visibility = View.GONE }
                 .subscribe {
-                    adapter.addAll(
-                        convertMovieToMainCardContainer(
-                            R.string.upcoming,
-                            it.results,
-                            ::openMovieDetails
-                        )
-                    )
-                }
-        )
-
-        compositeDisposable.add(MovieApiClient.apiClient
-            .getPopularMovies()
-            .setDefaultThreads()
-            .subscribe {
-                adapter.addAll(
-                    convertMovieToMainCardContainer(
-                        R.string.popular,
-                        it.results,
-                        ::openMovieDetails
-                    )
-                )
-            }
-        )
-
-        compositeDisposable.add(MovieApiClient.apiClient
-            .getPlayingNowMovies()
-            .setDefaultThreads()
-            .subscribe {
-                adapter.addAll(
-                    convertMovieToMainCardContainer(
-                        R.string.playing_now,
-                        it.results,
-                        ::openMovieDetails
-                    )
-                )
-            }
-        )
+                    adapter.apply {
+                        addAll(convertMovieToMainCardContainer(R.string.playing_now, it.playingNowMovies))
+                        addAll(convertMovieToMainCardContainer(R.string.popular, it.popularMovies))
+                        addAll(convertMovieToMainCardContainer(R.string.upcoming, it.upcomingMovies))
+                    }
+                })
     }
 
     private fun openMovieDetails(movie: Movie) {
@@ -108,9 +95,8 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
 
     private fun convertMovieToMainCardContainer(
         @StringRes title: Int,
-        movies: List<Movie>,
-        onClick: (Movie) -> Unit
-    ) = listOf(MainCardContainer(title, movies.map { MovieItem(it, onClick) }))
+        movies: List<Movie>
+    ) = listOf(MainCardContainer(title, movies.map { MovieItem(it, ::openMovieDetails) }))
 
     override fun onStop() {
         super.onStop()

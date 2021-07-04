@@ -45,6 +45,7 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
                     .searchMovie(it)
                     .map { pageResponse -> pageResponse.results }
             }
+            .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
             .setDefaultThreads()
             .subscribe {
                 val movieList = it.map {
@@ -52,7 +53,9 @@ class SearchFragment : BaseFragment(R.layout.fragment_search) {
                         it
                     ) { movie -> openMovieDetails(movie) }
                 }.toList()
+                adapter.clear()
                 movies_recycler_view.adapter = adapter.apply { addAll(movieList) }
+                progress_bar.visibility = View.GONE
             }
         )
         search_toolbar.setText(searchTerm)

@@ -21,6 +21,8 @@ class TvShowsFragment : BaseFragment(R.layout.tv_shows_fragment) {
             MovieApiClient.apiClient
                 .getTvSeries()
                 .setDefaultThreads()
+                .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
+                .doOnComplete { progress_bar.visibility = View.GONE }
                 .subscribe { seriesResponse ->
                     val tvShowsList = seriesResponse.results.map {
                         SeriesPreviewItem(

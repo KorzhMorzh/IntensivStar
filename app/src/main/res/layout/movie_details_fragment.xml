@@ -155,7 +155,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="@dimen/text_size_medium"
-                app:layout_constraintTop_toBottomOf="@id/studio"
+                app:layout_constraintTop_toBottomOf="@id/studio_value"
                 android:layout_marginTop="@dimen/material_margin_normal"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/movie_details_genre"/>
@@ -167,15 +167,16 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="@dimen/text_size_medium"
-                app:layout_constraintTop_toBottomOf="@id/genre"
+                app:layout_constraintTop_toBottomOf="@id/genre_value"
                 android:layout_marginTop="@dimen/material_margin_normal"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/movie_details_year"/>
 
             <TextView
                 android:id="@+id/studio_value"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/studio"
                 app:layout_constraintStart_toEndOf="@id/studio"
                 android:layout_marginStart="@dimen/material_margin_normal"
@@ -184,9 +185,10 @@
 
             <TextView
                 android:id="@+id/genre_value"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="@id/genre"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/studio_value"
                 style="@style/AppTheme.Text.TextGreyParagraph"
                 tools:text="Action, Adventure, Fantasy "/>

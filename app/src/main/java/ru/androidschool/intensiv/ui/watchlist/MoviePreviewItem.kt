@@ -18,7 +18,7 @@ class MoviePreviewItem(
         viewHolder.image_preview.setOnClickListener {
             onClick.invoke(content)
         }
-        // TODO Получать из модели
-        viewHolder.image_preview.load("https://www.kinopoisk.ru/images/film_big/1143242.jpg")
+
+        viewHolder.image_preview.load(content.posterPath)
     }
 }

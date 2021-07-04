@@ -1,9 +1,20 @@
 package ru.androidschool.intensiv.data
 
+import com.google.gson.annotations.SerializedName
+import ru.androidschool.intensiv.BuildConfig
+import ru.androidschool.intensiv.util.convertRating
+
 class Movie(
-    var title: String? = "",
-    var voteAverage: Double = 0.0
+    @SerializedName("id")
+    val id: Int?,
+    @SerializedName("title")
+    var title: String?
 ) {
-    val rating: Float
-        get() = voteAverage.div(2).toFloat()
+    @SerializedName("poster_path")
+    var posterPath: String? = null
+        get() = "${BuildConfig.BASE_URL_IMAGE}$field"
+
+    @SerializedName("vote_average")
+    val voteAverage: Float = 0.0f
+        get() = convertRating(field)
 }

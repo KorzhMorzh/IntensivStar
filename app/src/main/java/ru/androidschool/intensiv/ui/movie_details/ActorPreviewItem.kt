@@ -15,6 +15,6 @@ class ActorPreviewItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.actor_name.text = content.name
-        viewHolder.actor_image_preview.load(content.image)
+        viewHolder.actor_image_preview.load(content.profilePath)
     }
 }

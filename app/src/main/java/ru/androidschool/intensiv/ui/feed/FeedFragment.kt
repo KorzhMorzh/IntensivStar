@@ -1,8 +1,11 @@
 package ru.androidschool.intensiv.ui.feed
 
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import androidx.annotation.StringRes
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
@@ -11,12 +14,14 @@ import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
 import kotlinx.android.synthetic.main.search_toolbar.view.*
 import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.data.MockRepository
 import ru.androidschool.intensiv.data.Movie
+import ru.androidschool.intensiv.network.MovieApiClient
+import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.afterTextChanged
+import ru.androidschool.intensiv.util.setDefaultThreads
 import timber.log.Timber
 
-class FeedFragment : Fragment(R.layout.feed_fragment) {
+class FeedFragment : BaseFragment(R.layout.feed_fragment) {
 
     private val adapter by lazy {
         GroupAdapter<GroupieViewHolder>()
@@ -41,42 +46,58 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
             }
         }
 
-        // Используя Мок-репозиторий получаем фэйковый список фильмов
-        val moviesList = listOf(
-            MainCardContainer(
-                R.string.recommended,
-                MockRepository.getMovies().map {
-                    MovieItem(it) { movie ->
-                        openMovieDetails(
-                            movie
+        movies_recycler_view.adapter = adapter
+
+        compositeDisposable.add(
+            MovieApiClient.apiClient
+                .getUpcomingMovies()
+                .setDefaultThreads()
+                .subscribe {
+                    adapter.addAll(
+                        convertMovieToMainCardContainer(
+                            R.string.upcoming,
+                            it.results,
+                            ::openMovieDetails
                         )
-                    }
-                }.toList()
-            )
+                    )
+                }
         )
 
-        movies_recycler_view.adapter = adapter.apply { addAll(moviesList) }
-
-        // Используя Мок-репозиторий получаем фэйковый список фильмов
-        // Чтобы отобразить второй ряд фильмов
-        val newMoviesList = listOf(
-            MainCardContainer(
-                R.string.upcoming,
-                MockRepository.getMovies().map {
-                    MovieItem(it) { movie ->
-                        openMovieDetails(movie)
-                    }
-                }.toList()
-            )
+        compositeDisposable.add(MovieApiClient.apiClient
+            .getPopularMovies()
+            .setDefaultThreads()
+            .subscribe {
+                adapter.addAll(
+                    convertMovieToMainCardContainer(
+                        R.string.popular,
+                        it.results,
+                        ::openMovieDetails
+                    )
+                )
+            }
         )
 
-        adapter.apply { addAll(newMoviesList) }
+        compositeDisposable.add(MovieApiClient.apiClient
+            .getPlayingNowMovies()
+            .setDefaultThreads()
+            .subscribe {
+                adapter.addAll(
+                    convertMovieToMainCardContainer(
+                        R.string.playing_now,
+                        it.results,
+                        ::openMovieDetails
+                    )
+                )
+            }
+        )
     }
 
     private fun openMovieDetails(movie: Movie) {
-        val bundle = Bundle()
-        bundle.putString(KEY_TITLE, movie.title)
-        findNavController().navigate(R.id.movie_details_fragment, bundle, options)
+        findNavController().navigate(
+            R.id.movie_details_fragment,
+            bundleOf(KEY_MOVIE_ID to movie.id),
+            options
+        )
     }
 
     private fun openSearch(searchText: String) {
@@ -85,9 +106,16 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         findNavController().navigate(R.id.search_dest, bundle, options)
     }
 
+    private fun convertMovieToMainCardContainer(
+        @StringRes title: Int,
+        movies: List<Movie>,
+        onClick: (Movie) -> Unit
+    ) = listOf(MainCardContainer(title, movies.map { MovieItem(it, onClick) }))
+
     override fun onStop() {
         super.onStop()
         search_toolbar.clear()
+        adapter.clear()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -96,7 +124,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
     companion object {
         const val MIN_LENGTH = 3
-        const val KEY_TITLE = "title"
+        const val KEY_MOVIE_ID = "movieId"
         const val KEY_SEARCH = "search"
     }
 }

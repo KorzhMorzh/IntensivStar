@@ -7,8 +7,10 @@ import android.view.View
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.search_toolbar.view.*
 import ru.androidschool.intensiv.R
+import timber.log.Timber
 
 class SearchBar @JvmOverloads constructor(
     context: Context,
@@ -59,4 +61,12 @@ class SearchBar @JvmOverloads constructor(
             }
         }
     }
+
+    fun search(): Observable<String> =
+        Observable.create { e ->
+            search_edit_text.afterTextChanged {
+                Timber.d(it.toString())
+                e.onNext(it.toString())
+            }
+        }
 }

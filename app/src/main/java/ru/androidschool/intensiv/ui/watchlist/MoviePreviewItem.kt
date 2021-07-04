@@ -18,7 +18,7 @@ class MoviePreviewItem(
         viewHolder.image_preview.setOnClickListener {
             onClick.invoke(content)
         }
-        // TODO Получать из модели
-        content.posterPath?.let { viewHolder.image_preview.load(it) }
+
+        viewHolder.image_preview.load(content.posterPath)
     }
 }

@@ -11,9 +11,7 @@ import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Function3
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
 import kotlinx.android.synthetic.main.search_toolbar.view.*
@@ -24,6 +22,7 @@ import ru.androidschool.intensiv.data.PageResponse
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.afterTextChanged
+import ru.androidschool.intensiv.util.setDefaultThreads
 import timber.log.Timber
 
 class FeedFragment : BaseFragment(R.layout.feed_fragment) {
@@ -68,28 +67,17 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
                         popularMovies.results
                     )
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .setDefaultThreads()
                 .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
                 .doOnComplete { progress_bar.visibility = View.GONE }
                 .subscribe {
                     adapter.apply {
-                        addAll(mapMovies(R.string.playing_now, it.playingNowMovies))
-                        addAll(mapMovies(R.string.popular, it.popularMovies))
-                        addAll(mapMovies(R.string.upcoming, it.upcomingMovies))
+                        addAll(convertMovieToMainCardContainer(R.string.playing_now, it.playingNowMovies))
+                        addAll(convertMovieToMainCardContainer(R.string.popular, it.popularMovies))
+                        addAll(convertMovieToMainCardContainer(R.string.upcoming, it.upcomingMovies))
                     }
                 })
     }
-
-    private fun mapMovies(@StringRes title: Int, movies: List<Movie>) =
-        listOf(
-            MainCardContainer(
-                title, movies.map {
-                    MovieItem(it) { movie ->
-                        openMovieDetails(movie)
-                    }
-                })
-        )
 
     private fun openMovieDetails(movie: Movie) {
         findNavController().navigate(
@@ -104,6 +92,11 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
         bundle.putString(KEY_SEARCH, searchText)
         findNavController().navigate(R.id.search_dest, bundle, options)
     }
+
+    private fun convertMovieToMainCardContainer(
+        @StringRes title: Int,
+        movies: List<Movie>
+    ) = listOf(MainCardContainer(title, movies.map { MovieItem(it, ::openMovieDetails) }))
 
     override fun onStop() {
         super.onStop()

@@ -31,16 +31,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <FrameLayout
+    <include
         android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/colorAccent"/>
-    </FrameLayout>
+        layout="@layout/include_loading" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

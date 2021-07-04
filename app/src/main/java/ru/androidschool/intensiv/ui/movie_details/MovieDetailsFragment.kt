@@ -6,9 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.movie_details_fragment.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.MovieCredits
@@ -20,6 +18,7 @@ import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.feed.FeedFragment
 import ru.androidschool.intensiv.util.load
+import ru.androidschool.intensiv.util.setDefaultThreads
 
 class MovieDetailsFragment : BaseFragment(R.layout.movie_details_fragment) {
 
@@ -50,18 +49,17 @@ class MovieDetailsFragment : BaseFragment(R.layout.movie_details_fragment) {
                         )
                     }
                 )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .setDefaultThreads()
                 .subscribe {
                     movie = it
                     title_tv.text = it.movie.title
                     description_tv.text = it.movie.overview
-                    movie_rating.rating = it.movie.rating
+                    movie_rating.rating = it.movie.voteAverage
                     genre_value.text = it.movie.genres?.joinToString(", ") { genre -> genre.name }
                     studio_value.text =
                         it.movie.productionCompanies?.joinToString(", ") { company -> company.name }
                     year_value.text = it.movie.releaseDate
-                    movie_image.load(it.movie.poster)
+                    movie_image.load(it.movie.posterPath)
                     actors_rv.adapter =
                         adapter.apply { addAll(it.actors.map { ActorPreviewItem(it) }) }
                 }

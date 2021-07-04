@@ -21,7 +21,6 @@ class MovieItem(
             onClick.invoke(content)
         }
 
-
         viewHolder.image_preview.load(content.posterPath)
     }
 }

@@ -1,8 +1,6 @@
 package ru.androidschool.intensiv.data
 
 import com.google.gson.annotations.SerializedName
-import ru.androidschool.intensiv.BuildConfig
-import ru.androidschool.intensiv.util.convertRating
 
 data class MovieDetails(
     val genres: List<Genre>?,
@@ -13,16 +11,13 @@ data class MovieDetails(
     val productionCompanies: List<ProductionCompany>?,
     @SerializedName("release_date")
     val releaseDate: String?,
-    val title: String?
-) {
+    val title: String?,
     @SerializedName("vote_average")
-    val voteAverage: Float = 0.0f
-        get() = convertRating(field)
-
+    val voteAverage: Float?,
     @SerializedName("poster_path")
-    val posterPath: String? = null
-        get() = "${BuildConfig.BASE_URL_IMAGE}$field"
-}
+    val posterPath: String?,
+    val isFavourite: Boolean = false
+)
 
 data class Genre(
     val id: Int?,
@@ -39,13 +34,11 @@ data class MovieCredits(
 )
 
 data class Actor(
-    val id: Int?,
-    val name: String?
-) {
+    val id: Int,
+    val name: String?,
     @SerializedName("profile_path")
     val profilePath: String? = null
-        get() = "${BuildConfig.BASE_URL_IMAGE}$field"
-}
+)
 
 data class MovieDetailsWithActors(
     val movie: MovieDetails,

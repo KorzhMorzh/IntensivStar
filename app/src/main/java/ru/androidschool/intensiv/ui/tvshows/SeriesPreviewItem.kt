@@ -5,6 +5,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_series.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.Series
+import ru.androidschool.intensiv.util.convertAndSetRating
 import ru.androidschool.intensiv.util.load
 
 class SeriesPreviewItem(
@@ -19,7 +20,7 @@ class SeriesPreviewItem(
             onClick.invoke(content)
         }
         viewHolder.title.text = content.name
-        viewHolder.series_rating.rating = content.voteAverage
+        viewHolder.series_rating.convertAndSetRating(content.voteAverage)
         viewHolder.image_series.load(content.posterPath)
     }
 }

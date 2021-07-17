@@ -4,6 +4,7 @@ import androidx.room.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import ru.androidschool.intensiv.data.entity.*
 import ru.androidschool.intensiv.util.setDefaultThreads
 
@@ -16,15 +17,17 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun save(actors: List<ActorEntity>): Completable
 
-    fun save(movieAndActor: MovieAndActor) {
-        save(movieAndActor.movie).setDefaultThreads().subscribe()
-        save(movieAndActor.actors).setDefaultThreads().subscribe()
-        saveJoins(movieAndActor.actors.map {
-            MovieActorCrossRef(
-                movieAndActor.movie.id,
-                it.id
-            )
-        }).setDefaultThreads().subscribe()
+    fun save(movieAndActor: MovieAndActor): Disposable {
+        return save(movieAndActor.movie)
+            .mergeWith(save(movieAndActor.actors))
+            .andThen(saveJoins(movieAndActor.actors.map {
+                MovieActorCrossRef(
+                    movieAndActor.movie.id,
+                    it.id
+                )
+            }))
+            .setDefaultThreads()
+            .subscribe()
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -36,14 +39,16 @@ interface MovieDao {
     @Delete
     fun delete(joins: List<MovieActorCrossRef>): Completable
 
-    fun delete(movieAndActor: MovieAndActor) {
-        delete(movieAndActor.movie).setDefaultThreads().subscribe()
-        delete(movieAndActor.actors.map {
-            MovieActorCrossRef(
-                movieAndActor.movie.id,
-                it.id
-            )
-        }).setDefaultThreads().subscribe()
+    fun delete(movieAndActor: MovieAndActor): Disposable {
+        return delete(movieAndActor.movie)
+            .mergeWith(delete(movieAndActor.actors.map {
+                MovieActorCrossRef(
+                    movieAndActor.movie.id,
+                    it.id
+                )
+            }))
+            .setDefaultThreads()
+            .subscribe()
     }
 
     @Query("SELECT * FROM Movies")

@@ -6,6 +6,7 @@ import androidx.navigation.fragment.findNavController
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import kotlinx.android.synthetic.main.movie_details_fragment.*
 import ru.androidschool.intensiv.R
@@ -77,15 +78,15 @@ class MovieDetailsFragment : BaseFragment(R.layout.movie_details_fragment) {
         }
 
         addToFavourite.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) addToFavourite() else removeFromFavourite()
+            compositeDisposable.add(if (isChecked) addToFavourite() else removeFromFavourite())
         }
     }
 
-    private fun addToFavourite() {
-        movieDao.save(convertMovieEntity(movie))
+    private fun addToFavourite(): Disposable {
+        return movieDao.save(convertMovieEntity(movie))
     }
 
-    private fun removeFromFavourite() {
-        movieDao.delete(convertMovieEntity(movie))
+    private fun removeFromFavourite(): Disposable {
+        return movieDao.delete(convertMovieEntity(movie))
     }
 }

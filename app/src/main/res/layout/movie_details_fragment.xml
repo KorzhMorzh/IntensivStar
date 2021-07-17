@@ -49,10 +49,11 @@
                         android:paddingEnd="@dimen/arrow_back_padding"
                         android:layout_gravity="start|center_vertical"/>
 
-                    <ImageView
+                    <CheckBox
+                        android:id="@+id/addToFavourite"
+                        android:button="@drawable/heart_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_heart"
                         android:layout_gravity="end|center_vertical"/>
                 </FrameLayout>
             </androidx.appcompat.widget.Toolbar>

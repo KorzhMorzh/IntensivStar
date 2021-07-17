@@ -5,6 +5,7 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_with_text.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.Movie
+import ru.androidschool.intensiv.util.convertAndSetRating
 import ru.androidschool.intensiv.util.load
 
 class MovieItem(
@@ -16,7 +17,7 @@ class MovieItem(
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.description.text = content.title
-        viewHolder.movie_rating.rating = content.voteAverage
+        viewHolder.movie_rating.convertAndSetRating(content.voteAverage)
         viewHolder.content.setOnClickListener {
             onClick.invoke(content)
         }

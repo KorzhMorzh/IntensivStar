@@ -82,5 +82,15 @@
             android:layout_height="match_parent"
             android:background="@color/blueDark" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favourite_movies_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/dimens_20"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

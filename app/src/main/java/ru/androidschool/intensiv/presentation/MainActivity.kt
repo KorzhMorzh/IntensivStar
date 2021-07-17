@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         val navController = host.navController
 
         setupBottomNavMenu(navController)
+
+        (application as MovieFinderApp).component.inject(this)
     }
 
     private fun setupBottomNavMenu(navController: NavController) {

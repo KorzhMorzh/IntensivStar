@@ -7,8 +7,9 @@ import ru.androidschool.intensiv.data.entity.MovieDetailsWithActors
 import ru.androidschool.intensiv.data.local.MovieDao
 import ru.androidschool.intensiv.data.mappers.convertMovieEntity
 import ru.androidschool.intensiv.domain.repository.FavouriteMoviesRepository
+import javax.inject.Inject
 
-class FavouriteMoviesRepositoryImpl(
+class FavouriteMoviesRepositoryImpl @Inject constructor(
     private val dao: MovieDao
 ) : FavouriteMoviesRepository {
 

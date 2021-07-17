@@ -8,8 +8,9 @@ import ru.androidschool.intensiv.data.local.MovieDao
 import ru.androidschool.intensiv.data.mappers.convertToMovie
 import ru.androidschool.intensiv.data.network.MovieApiInterface
 import ru.androidschool.intensiv.domain.repository.MovieDetailsRepository
+import javax.inject.Inject
 
-class MovieDetailsRepositoryImpl(
+class MovieDetailsRepositoryImpl @Inject constructor(
     private val api: MovieApiInterface,
     private val dao: MovieDao
 ) : MovieDetailsRepository {

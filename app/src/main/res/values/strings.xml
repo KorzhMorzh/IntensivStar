@@ -15,7 +15,8 @@
     <string name="tv_shows">Сериалы</string>
     <string name="profile">Профиль</string>
     <string name="search">Поиск</string>
-    <string name="later">44\n Буду смотреть</string>
+    <string name="later">0\n Буду смотреть</string>
+    <string name="favourite_movies_count">%d\n Понравилось</string>
 
     <string name="tv_show">Телесериалы</string>
     <string name="close">закрыть</string>

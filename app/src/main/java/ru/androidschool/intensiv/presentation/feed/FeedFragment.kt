@@ -15,6 +15,8 @@ import kotlinx.android.synthetic.main.feed_header.*
 import kotlinx.android.synthetic.main.search_toolbar.view.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.entity.Movie
+import ru.androidschool.intensiv.data.network.MovieApiClient
+import ru.androidschool.intensiv.data.repository.FeedRepositoryImpl
 import ru.androidschool.intensiv.domain.usecase.FeedUseCase
 import ru.androidschool.intensiv.presentation.base.BaseFragment
 import ru.androidschool.intensiv.util.afterTextChanged
@@ -48,7 +50,11 @@ class FeedFragment : BaseFragment(R.layout.feed_fragment) {
         movies_recycler_view.adapter = adapter
 
         compositeDisposable.add(
-            FeedUseCase()
+            FeedUseCase(
+                FeedRepositoryImpl(
+                    MovieApiClient.apiClient
+                )
+            )
                 .getFeed()
                 .doOnSubscribe { progress_bar.visibility = View.VISIBLE }
                 .doOnComplete { progress_bar.visibility = View.GONE }

@@ -4,15 +4,13 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import ru.androidschool.intensiv.data.entity.Movie
 import ru.androidschool.intensiv.data.entity.MovieDetailsWithActors
-import ru.androidschool.intensiv.data.local.MovieDatabase
+import ru.androidschool.intensiv.data.local.MovieDao
 import ru.androidschool.intensiv.data.mappers.convertMovieEntity
 import ru.androidschool.intensiv.domain.repository.FavouriteMoviesRepository
-import ru.androidschool.intensiv.presentation.MovieFinderApp
 
-object FavouriteMoviesRepositoryImpl : FavouriteMoviesRepository {
-    private val dao by lazy {
-        MovieDatabase.get(MovieFinderApp.instance?.applicationContext!!).movieDao()
-    }
+class FavouriteMoviesRepositoryImpl(
+    private val dao: MovieDao
+) : FavouriteMoviesRepository {
 
     override fun getFavouritesMovies(): Observable<List<Movie>> = dao.getMovies()
 

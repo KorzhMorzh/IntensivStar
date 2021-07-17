@@ -6,6 +6,8 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.tv_shows_fragment.*
 import ru.androidschool.intensiv.R
+import ru.androidschool.intensiv.data.network.MovieApiClient
+import ru.androidschool.intensiv.data.repository.TVShowsRepositoryImpl
 import ru.androidschool.intensiv.domain.usecase.TVShowsUseCase
 import ru.androidschool.intensiv.presentation.base.BaseMVPFragment
 
@@ -23,7 +25,11 @@ class TvShowsFragment : BaseMVPFragment<TVShowsView>(R.layout.tv_shows_fragment)
         }
     }
 
-    override val presenter = TVShowsPresenter(this, TVShowsUseCase())
+    override val presenter = TVShowsPresenter(
+        this, TVShowsUseCase(
+            TVShowsRepositoryImpl(MovieApiClient.apiClient)
+        )
+    )
 
     override fun onResume() {
         super.onResume()

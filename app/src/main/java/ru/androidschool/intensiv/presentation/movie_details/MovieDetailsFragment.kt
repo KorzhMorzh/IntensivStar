@@ -9,6 +9,10 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.movie_details_fragment.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.entity.MovieDetailsWithActors
+import ru.androidschool.intensiv.data.local.MovieDatabase
+import ru.androidschool.intensiv.data.network.MovieApiClient
+import ru.androidschool.intensiv.data.repository.FavouriteMoviesRepositoryImpl
+import ru.androidschool.intensiv.data.repository.MovieDetailsRepositoryImpl
 import ru.androidschool.intensiv.domain.usecase.FavouriteMoviesUseCase
 import ru.androidschool.intensiv.domain.usecase.MovieDetailsUseCase
 import ru.androidschool.intensiv.presentation.base.BaseFragment
@@ -23,11 +27,18 @@ class MovieDetailsFragment : BaseFragment(R.layout.movie_details_fragment) {
     }
 
     private val movieDetailsUseCase by lazy {
-        MovieDetailsUseCase()
+        MovieDetailsUseCase(
+            MovieDetailsRepositoryImpl(
+                MovieApiClient.apiClient,
+                MovieDatabase.get(requireContext()).movieDao()
+            )
+        )
     }
 
     private val favouritesMoviesUseCase by lazy {
-        FavouriteMoviesUseCase()
+        FavouriteMoviesUseCase(
+            FavouriteMoviesRepositoryImpl(MovieDatabase.get(requireContext()).movieDao())
+        )
     }
 
     private lateinit var movie: MovieDetailsWithActors

@@ -5,14 +5,12 @@ import io.reactivex.functions.BiFunction
 import ru.androidschool.intensiv.data.entity.MovieCredits
 import ru.androidschool.intensiv.data.entity.MovieDetails
 import ru.androidschool.intensiv.data.entity.MovieDetailsWithActors
-import ru.androidschool.intensiv.data.repository.MovieDetailsRepositoryImpl
 import ru.androidschool.intensiv.domain.repository.MovieDetailsRepository
 import ru.androidschool.intensiv.util.setDefaultThreads
 
-class MovieDetailsUseCase {
-    private val repository: MovieDetailsRepository by lazy {
-        MovieDetailsRepositoryImpl
-    }
+class MovieDetailsUseCase(
+    private val repository: MovieDetailsRepository
+) {
 
     fun getMovieDetails(movieId: Int): Observable<MovieDetailsWithActors> {
         val remoteObservable = Observable

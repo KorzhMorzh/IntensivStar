@@ -54,4 +54,5 @@ ext {
     rxAndroidVersion = '2.1.1'
     roomVersion = '2.3.0'
     archVersion = '1.1.1'
+    lifecycleVersion = '2.3.1'
 }

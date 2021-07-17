@@ -99,4 +99,10 @@ dependencies {
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$rootProject.roomVersion"
     implementation "android.arch.persistence.room:rxjava2:$rootProject.archVersion"
+
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
+
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion"
 }

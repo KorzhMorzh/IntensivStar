@@ -17,6 +17,8 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.fragment_profile.*
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.entity.Movie
+import ru.androidschool.intensiv.data.local.MovieDatabase
+import ru.androidschool.intensiv.data.repository.FavouriteMoviesRepositoryImpl
 import ru.androidschool.intensiv.domain.usecase.FavouriteMoviesUseCase
 import ru.androidschool.intensiv.presentation.base.BaseFragment
 import ru.androidschool.intensiv.presentation.feed.FeedFragment
@@ -27,7 +29,11 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
     private lateinit var profileTabLayoutTitles: Array<String>
 
     private val favouritesMoviesUseCase by lazy {
-        FavouriteMoviesUseCase()
+        FavouriteMoviesUseCase(
+            FavouriteMoviesRepositoryImpl(
+                MovieDatabase.get(requireContext()).movieDao()
+            )
+        )
     }
 
     private var profilePageChangeCallback = object : ViewPager2.OnPageChangeCallback() {

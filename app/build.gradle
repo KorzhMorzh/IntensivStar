@@ -99,4 +99,8 @@ dependencies {
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$rootProject.roomVersion"
     implementation "android.arch.persistence.room:rxjava2:$rootProject.archVersion"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
 }

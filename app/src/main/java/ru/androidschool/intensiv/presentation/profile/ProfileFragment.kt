@@ -32,6 +32,10 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
 
     private lateinit var viewModel: ProfileViewModel
 
+    private val movieDao by lazy {
+        MovieDatabase.get(requireContext()).movieDao()
+    }
+
     private var profilePageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             favourite_movies_recycler_view.isVisible = position == FAVOURITE_MOVIES_TAB
@@ -55,7 +59,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         super.onCreate(savedInstanceState)
         val factory = ProfileViewModelFactory(
             FavouriteMoviesUseCase(
-                FavouriteMoviesRepositoryImpl(MovieDatabase.get(requireContext()).movieDao())
+                FavouriteMoviesRepositoryImpl(movieDao)
             )
         )
 

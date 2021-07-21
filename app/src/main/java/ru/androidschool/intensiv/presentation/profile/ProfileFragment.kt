@@ -6,6 +6,8 @@ import android.text.style.RelativeSizeSpan
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.viewpager2.widget.ViewPager2
@@ -28,12 +30,10 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
 
     private lateinit var profileTabLayoutTitles: Array<String>
 
-    private val favouritesMoviesUseCase by lazy {
-        FavouriteMoviesUseCase(
-            FavouriteMoviesRepositoryImpl(
-                MovieDatabase.get(requireContext()).movieDao()
-            )
-        )
+    private lateinit var viewModel: ProfileViewModel
+
+    private val movieDao by lazy {
+        MovieDatabase.get(requireContext()).movieDao()
     }
 
     private var profilePageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -53,6 +53,17 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
             popEnter = R.anim.slide_in_left
             popExit = R.anim.slide_out_right
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val factory = ProfileViewModelFactory(
+            FavouriteMoviesUseCase(
+                FavouriteMoviesRepositoryImpl(movieDao)
+            )
+        )
+
+        viewModel = ViewModelProvider(this, factory).get(ProfileViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,7 +97,7 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
             tab.text = getSpannableTitle(number, title)
         }.attach()
 
-        loadFavouriteMovies()
+        observeViewModel()
     }
 
     private fun getSpannableTitle(number: String, title: String): SpannableString {
@@ -100,23 +111,22 @@ class ProfileFragment : BaseFragment(R.layout.fragment_profile) {
         }
     }
 
-    private fun loadFavouriteMovies() {
-        compositeDisposable.add(
-            favouritesMoviesUseCase.getFavouritesMovies().subscribe {
-                tabLayout.getTabAt(FAVOURITE_MOVIES_TAB)?.text =
-                    getSpannableTitle(
-                        it.size.toString(),
-                        getString(R.string.favourite_movies_count, it.size)
-                    )
-                val movieList = it.map {
-                    SearchPreviewItem(
-                        it
-                    ) { movie -> openMovieDetails(movie) }
-                }.toList()
-                adapter.clear()
-                favourite_movies_recycler_view.adapter = adapter.apply { addAll(movieList) }
-            }
-        )
+    private fun observeViewModel() {
+        viewModel.favouriteMovies.observe(viewLifecycleOwner, Observer {
+            tabLayout.getTabAt(FAVOURITE_MOVIES_TAB)?.text =
+                getSpannableTitle(
+                    it.size.toString(),
+                    getString(R.string.favourite_movies_count, it.size)
+                )
+            val movieList = it.map {
+                SearchPreviewItem(
+                    it
+                ) { movie -> openMovieDetails(movie) }
+            }.toList()
+            adapter.clear()
+            favourite_movies_recycler_view.adapter = adapter.apply { addAll(movieList) }
+        })
+
     }
 
     override fun onStop() {

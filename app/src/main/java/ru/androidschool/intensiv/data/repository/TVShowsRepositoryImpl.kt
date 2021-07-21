@@ -1,6 +1,5 @@
 package ru.androidschool.intensiv.data.repository
 
-import io.reactivex.Observable
 import ru.androidschool.intensiv.data.entity.PageResponse
 import ru.androidschool.intensiv.data.entity.Series
 import ru.androidschool.intensiv.data.network.MovieApiInterface
@@ -10,5 +9,5 @@ class TVShowsRepositoryImpl(
     private val api: MovieApiInterface
 ) : TVShowsRepository {
 
-    override fun getTVShows(): Observable<PageResponse<Series>> = api.getTvSeries()
+    override suspend fun getTVShows(): PageResponse<Series> = api.getTvSeries()
 }

@@ -27,10 +27,10 @@ interface MovieApiInterface {
     ): Observable<PageResponse<Movie>>
 
     @GET("tv/popular")
-    fun getTvSeries(
+    suspend fun getTvSeries(
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = RU_LANGUAGE_CODE
-    ): Observable<PageResponse<Series>>
+    ): PageResponse<Series>
 
     @GET("movie/{movie_id}")
     fun getMovieDetails(

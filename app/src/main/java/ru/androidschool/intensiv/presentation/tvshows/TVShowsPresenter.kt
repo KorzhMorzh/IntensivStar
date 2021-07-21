@@ -10,23 +10,19 @@ class TVShowsPresenter(
 ) : BasePresenter<TVShowsView>() {
 
     private fun loadTVShows() {
-        disposable.addAll(
-            tvShowsUseCase
-                .getTVShows()
-                .doOnNext { view?.showLoading() }
-                .doOnComplete { view?.hideLoading() }
-                .map { seriesList ->
-                    seriesList.map {
-                        SeriesPreviewItem(
-                            it
-                        ) { series -> view?.openDetails(series.id) }
-                    }
-                }
-                .subscribe
-                {
-                    view?.showTVShows(it)
-                }
-        )
+        view?.showLoading()
+        launchIO {
+            val tvShows = tvShowsUseCase.getTVShows().map {
+                SeriesPreviewItem(
+                    it
+                ) { series -> view?.openDetails(series.id) }
+            }
+            launchUI {
+                view?.showTVShows(tvShows)
+                view?.hideLoading()
+            }
+
+        }
     }
 
     override fun resume() {

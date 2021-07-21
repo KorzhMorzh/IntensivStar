@@ -5,8 +5,9 @@ import ru.androidschool.intensiv.data.entity.Movie
 import ru.androidschool.intensiv.data.entity.MovieDetailsWithActors
 import ru.androidschool.intensiv.domain.repository.FavouriteMoviesRepository
 import ru.androidschool.intensiv.util.setDefaultThreads
+import javax.inject.Inject
 
-class FavouriteMoviesUseCase(
+class FavouriteMoviesUseCase @Inject constructor(
     private val favouriteMoviesRepository: FavouriteMoviesRepository
 ) {
 

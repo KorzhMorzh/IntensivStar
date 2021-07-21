@@ -7,8 +7,9 @@ import ru.androidschool.intensiv.data.entity.MovieDetails
 import ru.androidschool.intensiv.data.entity.MovieDetailsWithActors
 import ru.androidschool.intensiv.domain.repository.MovieDetailsRepository
 import ru.androidschool.intensiv.util.setDefaultThreads
+import javax.inject.Inject
 
-class MovieDetailsUseCase(
+class MovieDetailsUseCase @Inject constructor(
     private val repository: MovieDetailsRepository
 ) {
 

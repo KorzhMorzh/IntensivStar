@@ -8,4 +8,4 @@ fun convertImagePath(image: String?): String =
     if (image?.contains(BuildConfig.BASE_URL_IMAGE) == true ||
         image?.contains(BuildConfig.BASE_URL) == true) {
         image
-    } else "${BuildConfig.BASE_URL_IMAGE}/$image"
+    } else "${BuildConfig.BASE_URL_IMAGE}$image"

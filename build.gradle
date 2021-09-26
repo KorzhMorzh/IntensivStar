@@ -43,6 +43,7 @@ ext {
     rulesVersion = '1.0.1'
     junitVersion = '4.13.2'
     espressoVersion = '3.4.0-beta01'
+    mockitoVersion = '3.11.2'
     timberVersion = '4.7.1'
 
     groupieVersion = '2.8.0'
